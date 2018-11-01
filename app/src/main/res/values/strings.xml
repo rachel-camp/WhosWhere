@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Who\'s Where?</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">User</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="tv_username">Username: </string>
+    <string name="tv_password">Password: </string>
+    <string name="button_login">Login</string>
+    <string name="tv_loginSuccess"></string>
+    <string name="tv_loginFail">Login Failed! Please go back, try it again!</string>
+    <string name="button_goBack">Go Back</string>
+    <string name="button_createUsername">New User</string>
+    <string name="tv_CreateUserLabel">Account Creation</string>
+    <string name="button_CreateUser">Create Account</string>
+</resources>

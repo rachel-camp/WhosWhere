@@ -2,13 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.savvy.whoswherev1">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -17,25 +14,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB-f1FwqKEPGWrNbRiJE1dgXTASooTkyjI"/>
+            android:value="AIzaSyB-f1FwqKEPGWrNbRiJE1dgXTASooTkyjI" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--<intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity android:name=".Map">
             android:theme=windowActionBar(false)>
@@ -44,23 +45,41 @@
             android:name=".spots"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--<intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <!-<category android:name="android.intent.category.LAUNCHER" />->
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
-        <activity android:name=".LoginActivity" android:label="Login">
+        <activity
+            android:name=".LoginActivity"
+            android:label="Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginSuccess_Activity" android:label="Login Success" />
-        <activity android:name=".LoginFail_Activity" android:label="Login Failed" />
-        <activity android:name=".CreateUser" android:label="Create your Account"></activity>
-        <activity android:name=".spotInfo" android:label="Spots Info"></activity>
+        <activity
+            android:name=".LoginSuccess_Activity"
+            android:label="Login Success" />
+        <activity
+            android:name=".LoginFail_Activity"
+            android:label="Login Failed" />
+        <activity
+            android:name=".CreateUser"
+            android:label="Create your Account" />
+        <activity
+            android:name=".spotInfo"
+            android:label="Spots Info" />
+
+        <receiver
+            android:name=".NotificationReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>

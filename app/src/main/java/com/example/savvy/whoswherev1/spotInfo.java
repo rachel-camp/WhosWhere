@@ -1,6 +1,9 @@
 package com.example.savvy.whoswherev1;
 
+
+//TODO: Clean up imports - MG
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,22 +19,12 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -49,32 +42,34 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 
-import java.lang.reflect.Array;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class spotInfo extends AppCompatActivity {
-   TextView spotLat;
-   TextView spotLong;
-   TextView spotName;
-   ListView spotMembers;
-   Button leaveBtn;
-   String userId;
-   String locationId;
-   Double lt;
-   Double lg;
-   List<String> memberListText = new ArrayList<>();
-   DynamoDBMapper dynamoDBMapper;
-   String newUserId;
+    NotificationReceiver receiver;
+    IntentFilter filter;
+    Intent broadcastIntent;
+
+    TextView spotLat;
+    TextView spotLong;
+    TextView spotName;
+    ListView spotMembers;
+    Button leaveBtn;
+    String userId;
+    String locationId;
+    String newUserId;
+    List<String> memberListText = new ArrayList<>();
+    Double lt;
+    Double lg;
+
+    DynamoDBMapper dynamoDBMapper;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +78,15 @@ public class spotInfo extends AppCompatActivity {
 
         userId = getIntent().getStringExtra("User");
         locationId = getIntent().getStringExtra("Location");
+
+        // dynamic intent for broadcast
+        filter = new IntentFilter();
+        receiver = new NotificationReceiver();
+
+        filter.addAction("test");
+        broadcastIntent = new Intent();
+        broadcastIntent.setAction("test");
+        registerReceiver(receiver, filter);
 
         // AWSMobileClient enables AWS user credentials to access your table
         AWSMobileClient.getInstance().initialize(this).execute();
@@ -130,6 +134,12 @@ public class spotInfo extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+    }
+
     public void checkInSpot(final double r, final double lat, final double lng){
         final FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
 
@@ -156,6 +166,7 @@ public class spotInfo extends AppCompatActivity {
                                 if(results[0] < r) {
                                     Toast.makeText(getApplicationContext(), "You are checked in to the spot", Toast.LENGTH_LONG).show();
                                     checkInReadUser(userId);
+
                                 } else {
                                     Toast.makeText(getApplicationContext(), "You are NOT in the spot", Toast.LENGTH_LONG).show();
                                     Switch checkIn = (Switch) findViewById(R.id.checkIn);
@@ -254,7 +265,10 @@ public class spotInfo extends AppCompatActivity {
         String name = userItem.getFirst_name() + " " + userItem.getLast_name();
         if(userItem.getCurrent_location() == null){
             name += " is not here.";
-        }else if(userItem.getCurrent_location().equals(locationId)){
+
+        }
+
+        else if(userItem.getCurrent_location().equals(locationId)){
             name += " is here!";
             if(userItem.getUserId().equals(userId)){
                 final Switch checkIn = (Switch) findViewById(R.id.checkIn);
@@ -264,13 +278,17 @@ public class spotInfo extends AppCompatActivity {
                     public void run() {
 
                         checkIn.setChecked(true);
+                        //TODO: Need Rachel to take a look and see how we can implement the broadcast to push to another user's phone. - MG
+                        //TODO: for now a notification triggers when user checks in - MG
+                        sendBroadcast(broadcastIntent);
+
 
                     }
                 });
             }
-        }else {
-            name += " is not here.";
         }
+        else name += " is not here.";
+
         memberListText.add(name);
         final ListView members = findViewById(R.id.mySpotsList);
         final ArrayAdapter<String> arrayAdapter= new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, memberListText);
@@ -322,6 +340,7 @@ public class spotInfo extends AppCompatActivity {
                 // Item updated
 
                 readLocation(locationId);
+
             }
         }).start();
     }

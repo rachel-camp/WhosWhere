@@ -104,6 +104,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void readUser(final String email) {
+        Toast.makeText(getApplicationContext(),"readUser running", Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -111,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
                 User_DB userItem = dynamoDBMapper.load(
                         User_DB.class,
                         email);
+
 
                 // Item read
                 //Log.d("User Item", userItem.getFirst_name());
